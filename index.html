@@ -188,7 +188,7 @@ td strong { font-size:11px; }
 
 
 /* Main payment-card deck: visible before the urgent-bill list is opened */
-.bill-deck-cover { margin:8px 0 22px; }
+
 .bill-deck-trigger { position:relative; display:block; width:100%; height:218px; padding:0; border:0; background:transparent; cursor:pointer; text-align:left; color:inherit; }
 .bill-deck-back, .bill-deck-front { position:absolute; inset:0; display:block; border-radius:26px; box-shadow:0 12px 26px rgba(25,35,30,.15); }
 .bill-deck-back-three { inset:0 0 28px 0; transform:translateY(-12px) scale(.965); background:linear-gradient(125deg,#f5d64d,#edb92f); }
@@ -274,10 +274,31 @@ td strong { font-size:11px; }
 .paid-bill-record { display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-top:1px solid var(--line); font-size:11px; }
 .paid-bill-record small { display:block; color:var(--muted); margin-top:3px; }
 
+/* Urgent Bills: do not reserve space while collapsed */
+#billsSection .collapsible-content[hidden] {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
 
+/* Expanded dropdown occupies space naturally */
+#billsSection .collapsible-content:not([hidden]) {
+    display: block;
+    height: auto;
+    overflow: visible;
+}
+
+/* Allow the dashboard to adjust naturally */
+#app > main,
+#app > main + main {
+    min-height: 0;
+}
 
 /* Three visible urgent-bill cards on the main dashboard */
-.bill-deck-cover { margin:8px 0 22px; }
+.bill-deck-cover { margin:8px 0 0 !important; }
 .bill-preview-stack {
   display:flex;
   flex-direction:column;
@@ -359,46 +380,26 @@ td strong { font-size:11px; }
   .bill-preview-name { font-size:14px; }
   .bill-preview-amount { font-size:13px; }
 }
-/* =========================================
-   STRONG OVERRIDE: REMOVE THE LARGE GAP
-   ========================================= */
 
-/* Remove bottom spacing from the first dashboard section */
-#app main:first-of-type {
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-    min-height: 0 !important;
-    height: auto !important;
+/* Add Capital and Add Expense: sit directly below the urgent-bill preview */
+.capital-expense-container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-/* Pull the second main section upward */
-#app main + main {
-    padding-top: 0 !important;
-    margin-top: -60px !important;
-    position: relative !important;
-    top: 0 !important;
+.capital-expense-container .actions-grid {
+    width: 100%;
+    margin: 0 0 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
 }
 
-/* Remove spacing around the urgent bills */
-#app #billsSection {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-}
-
-/* Correct class selector for the bill deck */
-#app .bill-deck-cover {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-/* Remove extra spacing above the income and expense panels */
-#app .actions-grid {
-    margin-top: 0 !important;
-}
-
-/* Prevent empty section spacing from keeping the gap */
-#app main + main > section:first-child {
-    margin-top: 0 !important;
+@media (max-width: 600px) {
+    .capital-expense-container .actions-grid {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 
@@ -473,11 +474,9 @@ td strong { font-size:11px; }
           </div>
           <div class="bill-deck" id="billList"></div>
         </div>
-      </div>
     </section>
-</main>
-<main>
-    <section class="actions-grid no-print">
+    <section class="capital-expense-container">
+    <section class="actions-grid">
       <div class="panel">
         <div class="panel-head"><div><h3>＋ Add money received</h3><div class="panel-desc">Every amount you add is distributed automatically.</div></div><span class="tag">INCOME</span></div>
         <form id="incomeForm">
@@ -501,6 +500,7 @@ td strong { font-size:11px; }
           <button class="btn btn-secondary btn-block" type="submit">Save expense</button>
         </form>
       </div>
+    </section>
     </section>
 
     <section class="section">
